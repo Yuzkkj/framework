@@ -47,6 +47,18 @@ function module.callFrom(funcName: string, contents: { [string]: { any? } }, cal
 	end
 end
 
+function module.call(contents: { [string]: () -> () }, callback: (name: string) -> ()): ()
+	for name, func in pairs(contents) do
+		if type(func) ~= "function" then
+			continue
+		end
+
+		Promise.promisify(func)():andThenCall(callback, name):catch(function(err)
+			debugger.warn(`Something went wrong while calling {name}: {err}`)
+		end)
+	end
+end
+
 function module.startComponents(components: { [string]: Types.Component<Instance> }): ()
 	for componentName, content in pairs(components) do
 		if type(content.new) ~= "function" then

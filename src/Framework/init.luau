@@ -12,7 +12,6 @@ local SERVER_LOADED_ATTRIBUTE = "ServerFinished"
 local Framework = {}
 
 Framework.WaitForServer = true
-Framework.Types = Types
 
 function Framework.SetServices(self: Framework, container: Folder): ()
 	assert(RunService:IsServer(), "SetServices can only be called from server.")
@@ -28,6 +27,10 @@ end
 
 function Framework.SetComponents(self: Framework, container: Folder): ()
 	self._components = utils.getContents(container)
+end
+
+function Framework.SetHandlers(self: Framework, container: Folder): ()
+	self._handlers = utils.getContents(container)
 end
 
 function Framework.SetUI(self: Framework, container: Folder): ()
@@ -53,6 +56,11 @@ function Framework.Start(self: Framework): typeof(Promise.new())
 
 			debugger.warn("Starting components")
 			utils.startComponents(self._components)
+
+			debugger.warn("Starting handlers")
+			utils.call(self._handlers, function(name)
+				debugger.print(`{name} handler started`)
+			end)
 
 			if self.WaitForServer then
 				script:SetAttribute(SERVER_LOADED_ATTRIBUTE, true)
@@ -85,26 +93,21 @@ function Framework.Start(self: Framework): typeof(Promise.new())
 			debugger.warn(`Starting components`)
 			utils.startComponents(self._components)
 
-			debugger.warn("Starting user interface")
-			for name, callback in pairs(self._userInterface) do
-				if type(callback) ~= "function" then
-					continue
-				end
+			debugger.warn(`Starting handlers`)
+			utils.call(self._handlers, function(name)
+				debugger.print(`{name} handler started`)
+			end)
 
-				Promise.promisify(callback)()
-					:andThen(function()
-						debugger.print(`UI {name} started`)
-					end)
-					:catch(function(err)
-						debugger.warn(`Something went wrong while starting UI {name}: {err}`)
-					end)
-			end
+			debugger.warn("Starting user interface")
+			utils.call(self._userInterface, function(name)
+				debugger.print(`UI {name} started`)
+			end)
 
 			local delta = tick() - startTick
 			resolve(delta * 1000)
 		end)
 	else
-		error(`WTF?`)
+		return Promise.reject(`An unknown error has occurred while starting the framework`)
 	end
 end
 
@@ -112,6 +115,7 @@ type Framework = typeof(Framework) & {
 	_services: { [string]: Types.Service }?,
 	_controllers: { [string]: Types.Controller },
 	_components: { [string]: Types.Component<Instance> },
+	_handlers: { [string]: Types.Handler },
 	_userInterface: { [string]: Types.UI },
 }
 
