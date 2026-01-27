@@ -55,7 +55,7 @@ function Framework.Start(self: Framework): typeof(Promise.new())
 			utils.startComponents(self._components)
 
 			if self.WaitForServer then
-				script:SetAttribute(SERVER_LOADED_ATTRIBUTE)
+				script:SetAttribute(SERVER_LOADED_ATTRIBUTE, true)
 			end
 
 			local delta = tick() - startTick
@@ -64,12 +64,12 @@ function Framework.Start(self: Framework): typeof(Promise.new())
 	elseif RunService:IsClient() then
 		return Promise.new(function(resolve)
 			local startTick = tick()
-			if self.WaitForServer and not script:GetAttribute(SERVER_LOADED_ATTRIBUTE) then
+			if self.WaitForServer and script:GetAttribute(SERVER_LOADED_ATTRIBUTE) == nil then
 				debugger.print("Waiting for server to load...")
 
 				repeat
 					task.wait(1)
-				until script:GetAttribute(SERVER_LOADED_ATTRIBUTE)
+				until script:GetAttribute(SERVER_LOADED_ATTRIBUTE) ~= nil
 			end
 
 			debugger.warn("Initializing controllers")
