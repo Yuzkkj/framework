@@ -5,7 +5,7 @@ local Promise = require(ReplicatedStorage.Packages.Promise)
 
 local Types = require(script.Parent.Types)
 
-local debugger = require(ReplicatedStorage.Modules.Plataform.Debugger)
+local debugger = require(script.Parent.Debugger)
 
 local module = {}
 
