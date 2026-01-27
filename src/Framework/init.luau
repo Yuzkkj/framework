@@ -30,15 +30,14 @@ function Framework.SetComponents(self: Framework, container: Folder): ()
 	self._components = utils.getContents(container)
 end
 
-function Framework.SetUserInterface(self: Framework, container: Folder): ()
+function Framework.SetUI(self: Framework, container: Folder): ()
 	assert(RunService:IsClient(), "SetUserInterface can only be called on client")
 
 	self._userInterface = utils.getContents(container)
 end
 
-Framework.Start = (
-	RunService:IsServer()
-	and function(self: Framework)
+function Framework.Start(self: Framework): typeof(Promise.new())
+	if RunService:IsServer() then
 		return Promise.new(function(resolve)
 			local startTick = tick()
 
@@ -60,11 +59,9 @@ Framework.Start = (
 			end
 
 			local delta = tick() - startTick
-			resolve(delta)
+			resolve(delta * 1000)
 		end)
-	end
-)
-	or function(self: Framework)
+	elseif RunService:IsClient() then
 		return Promise.new(function(resolve)
 			local startTick = tick()
 			if self.WaitForServer and not script:GetAttribute(SERVER_LOADED_ATTRIBUTE) then
@@ -104,9 +101,12 @@ Framework.Start = (
 			end
 
 			local delta = tick() - startTick
-			resolve(delta)
+			resolve(delta * 1000)
 		end)
+	else
+		error(`WTF?`)
 	end
+end
 
 type Framework = typeof(Framework) & {
 	_services: { [string]: Types.Service }?,
