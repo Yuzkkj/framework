@@ -1,6 +1,6 @@
 [package]
 name = "yuzkkj/framework"
-version = "1.1.0"
+version = "2.0.0"
 registry = "https://github.com/UpliftGames/wally-index"
 realm = "shared"
 description = "Yuz framework. Don't use!"
@@ -15,3 +15,6 @@ include = [
     "src/**",
     "wally.toml",
 ]
+
+[dependencies]
+Promise = "howmanysmall/typed-promise@4.0.6"
