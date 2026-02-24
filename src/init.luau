@@ -1,7 +1,6 @@
-local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local RunService = game:GetService("RunService")
 
-local Promise = require(ReplicatedStorage.Packages.Promise)
+local Promise = require(script.Parent:WaitForChild("Promise"))
 
 local debugger = require(script.Debugger)
 local utils = require(script.Utils)

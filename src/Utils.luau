@@ -1,7 +1,6 @@
 local CollectionService = game:GetService("CollectionService")
-local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
-local Promise = require(ReplicatedStorage.Packages.Promise)
+local Promise = require(script.Parent.Parent:WaitForChild("Promise"))
 
 local debugger = require(script.Parent.Debugger)
 

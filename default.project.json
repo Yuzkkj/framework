@@ -1,16 +1,6 @@
 {
   "name": "framework",
   "tree": {
-    "$className": "DataModel",
-
-    "ReplicatedStorage": {
-      "Packages": {
-        "$path": "Packages"
-      },
-
-      "Framework": {
-        "$path": "src"
-      }
-    }
+    "$path": "src"
   }
 }
