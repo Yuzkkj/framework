@@ -35,7 +35,13 @@ function Framework.SetComponents(self: Framework, container: Folder): ()
 	self._components = utils.getContents(container)
 end
 --[=[
-	Initialize services/controllers, then start services/controllers, then start components.
+	Set the handlers to be used on `Start`. Can be called on both server and client.
+]=]
+function Framework.SetHandlers(self: Framework, container: Folder): ()
+	self._handlers = utils.getContents(container)
+end
+--[=[
+	Initialize services/controllers, then start services/controllers, then start components and handlers.
 	@return a promise that resolves with delta time of startup.
 ]=]
 function Framework.Start(self: Framework): Promise.Promise
@@ -55,6 +61,11 @@ function Framework.Start(self: Framework): Promise.Promise
 
 			debugger.warn("Starting components")
 			utils.startComponents(self._components)
+
+			debugger.warn("Calling handlers")
+			utils.call(self._handlers, function(handlerName: string)
+				debugger.print(`Called {handlerName} handler`)
+			end)
 
 			if self.WaitForServer then
 				script:SetAttribute(SERVER_LOADED_ATTRIBUTE, true)
@@ -86,6 +97,11 @@ function Framework.Start(self: Framework): Promise.Promise
 			debugger.warn(`Starting components`)
 			utils.startComponents(self._components)
 
+			debugger.warn("Calling handlers")
+			utils.call(self._handlers, function(handlerName: string)
+				debugger.print(`Called {handlerName} handler`)
+			end)
+
 			resolve(tick() - startTick)
 		end)
 	else
@@ -97,6 +113,7 @@ type Framework = typeof(Framework) & {
 	_services: { [string]: any }?,
 	_controllers: { [string]: any },
 	_components: { [string]: any },
+	_handlers: { [string]: () -> () },
 }
 
 return Framework :: Framework

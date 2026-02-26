@@ -6,7 +6,7 @@ local debugger = require(script.Parent.Debugger)
 
 local module = {}
 
-function module.getContents(folder: Folder): { [string]: { any? } }
+function module.getContents(folder: Folder): { [string]: any }
 	local modules = {}
 
 	for _, descendant in pairs(folder:GetDescendants()) do
@@ -38,6 +38,18 @@ function module.callFrom(funcName: string, contents: { [string]: { any? } }, cal
 
 		Promise.promisify(content[funcName])(content):andThenCall(callback, contentName):catch(function(err)
 			debugger.warn(`Something went wrong while calling {funcName} from {contentName}: {err}`)
+		end)
+	end
+end
+
+function module.call(contents: { [string]: () -> () }, callback: (name: string) -> ()): ()
+	for contentName, content in pairs(contents) do
+		if type(content) ~= "function" then
+			continue
+		end
+
+		Promise.promisify(content)():andThenCall(callback, contentName):catch(function(err)
+			debugger.warn(`Something went wrong while calling {contentName}: {err}`)
 		end)
 	end
 end
