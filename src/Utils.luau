@@ -4,6 +4,8 @@ local Promise = require(script.Parent.Parent:WaitForChild("Promise"))
 
 local debugger = require(script.Parent.Debugger)
 
+local objectsCache = {} :: { [Instance]: any & { Destroy: () -> () } }
+
 local module = {}
 
 function module.getContents(folder: Folder): { [string]: any }
@@ -68,13 +70,7 @@ function module.startComponents(components: { [string]: any }): ()
 		for _, instance in pairs(CollectionService:GetTagged(content.Tag)) do
 			Promise.promisify(content.new)(instance)
 				:andThen(function(object)
-					object._janitor:Add(
-						CollectionService:GetInstanceRemovedSignal(content.Tag):Connect(function(removedFrom)
-							if instance == removedFrom then
-								object:Destroy()
-							end
-						end)
-					)
+					objectsCache[instance] = object
 				end)
 				:catch(function(err)
 					debugger.warn(
@@ -86,19 +82,20 @@ function module.startComponents(components: { [string]: any }): ()
 		CollectionService:GetInstanceAddedSignal(content.Tag):Connect(function(instance)
 			Promise.promisify(content.new)(instance)
 				:andThen(function(object)
-					object._janitor:Add(
-						CollectionService:GetInstanceRemovedSignal(content.Tag):Connect(function(removedFrom)
-							if instance == removedFrom then
-								object:Destroy()
-							end
-						end)
-					)
+					objectsCache[instance] = object
 				end)
 				:catch(function(err)
 					debugger.warn(
 						`Failed to create object for instance {instance.Name} of component {componentName}: {err}`
 					)
 				end)
+		end)
+
+		CollectionService:GetInstanceRemovedSignal(content.Tag):Connect(function(instance)
+			local object = objectsCache[instance]
+			if object then
+				object:Destroy()
+			end
 		end)
 
 		debugger.print(`{componentName} component started`)
