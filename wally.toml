@@ -1,6 +1,6 @@
 [package]
 name = "yuzkkj/framework"
-version = "2.1.1"
+version = "3.0.0"
 registry = "https://github.com/UpliftGames/wally-index"
 realm = "shared"
 description = "Yuz framework. Don't use!"
