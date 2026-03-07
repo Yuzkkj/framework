@@ -11,8 +11,6 @@ export type StartOptions = {
 	componentsContainer: Folder,
 }
 
-assert(RunService:IsServer(), "Framework server can only be called from server")
-
 local server = {}
 --[=[
 	Determinates what case should be used when calling methods.
@@ -30,6 +28,7 @@ server.waitForServer = true
 	@return Promise A promise that resolves with the time taken to start
 ]=]
 function server:start(startOptions: StartOptions): Promise.Promise
+	assert(RunService:IsServer(), "Framework server can only be called from server")
 	return Promise.new(function(resolve)
 		local startTick = tick()
 

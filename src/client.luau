@@ -4,8 +4,6 @@ local Promise = require(script.Parent.Parent:WaitForChild("Promise"))
 
 local utils = require(script.Parent.utils)
 
-assert(RunService:IsClient(), "Framework client can only be called from client")
-
 export type CaseStyle = "camel" | "Pascal"
 
 export type StartOptions = {
@@ -32,6 +30,7 @@ client.waitForServer = true
 	@return Promise A promise that resolves with the time taken to start
 ]=]
 function client:start(startOptions: StartOptions): Promise.Promise
+	assert(RunService:IsClient(), "Framework client can only be called from client")
 	return Promise.new(function(resolve)
 		local startTick = tick()
 		if self.waitForServer and script.Parent:GetAttribute(utils.constants.SERVER_LOADED_ATTRIBUTE) == nil then
