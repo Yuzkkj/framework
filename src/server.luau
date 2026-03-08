@@ -7,15 +7,15 @@ local utils = require(script.Parent.utils)
 export type CaseStyle = "camel" | "Pascal"
 
 export type StartOptions = {
-	servicesContainer: Folder,
-	componentsContainer: Folder,
+	components: Folder,
+	services: Folder,
 }
 
 local server = {}
 --[=[
-	Determinates what case should be used when calling methods.
+	Determinates what case style should be used when calling methods.
 ]=]
-server.caseStyle = "camel" :: CaseStyle
+server.casing = "camel" :: CaseStyle
 --[=[
 	Determines if client startup should wait until server load finish.
 ]=]
@@ -23,12 +23,12 @@ server.waitForServer = true
 --[=[
 	Initializes services, then starts services, and then start components.
 
-	@yields
 	@param startOptions StartOptions
-	@return Promise A promise that resolves with the time taken to start
+	@return A promise that resolves with the time taken to start
 ]=]
 function server:start(startOptions: StartOptions): Promise.Promise
 	assert(RunService:IsServer(), "Framework server can only be called from server")
+
 	return Promise.new(function(resolve)
 		local startTick = tick()
 

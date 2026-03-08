@@ -1,6 +1,6 @@
 local RunService = game:GetService("RunService")
 
-local module = {
+local debugger = {
 	["print"] = function<T...>(...: T...): ()
 		if not RunService:IsStudio() then
 			return
@@ -30,4 +30,4 @@ local module = {
 	end :: typeof(error),
 }
 
-return module
+return debugger
