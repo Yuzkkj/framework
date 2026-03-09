@@ -36,12 +36,12 @@ function server:start(startOptions: StartOptions): Promise.Promise
 		local components = utils.getContents(startOptions.components)
 
 		utils.debugger.warn("Initializing services")
-		utils.callFrom(if self.caseStyle == "Pascal" then "Init" else "init", services, function(serviceName)
+		utils.callFrom(if self.casing == "Pascal" then "Init" else "init", services, function(serviceName)
 			utils.debugger.print(`{serviceName} initialized`)
 		end)
 
 		utils.debugger.warn("Starting services")
-		utils.callFrom(if self.caseStyle == "Pascal" then "Start" else "start", services, function(serviceName)
+		utils.callFrom(if self.casing == "Pascal" then "Start" else "start", services, function(serviceName)
 			utils.debugger.print(`{serviceName} started`)
 		end)
 
