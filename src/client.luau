@@ -15,7 +15,7 @@ local client = {}
 --[=[
 	Determinates what case style should be used when calling methods.
 ]=]
-client.casing = "camel" :: CaseStyle
+client.casing = "Pascal" :: CaseStyle
 --[=[
 	Determinates if it should wait for server to load before starting.
 ]=]
@@ -30,7 +30,7 @@ client.waitForServer = true
 ]=]
 function client:start(startOptions: StartOptions): Promise.Promise
 	assert(RunService:IsClient(), "Framework client can only be called from client")
-	
+
 	return Promise.new(function(resolve)
 		local startTick = tick()
 		if self.waitForServer and script.Parent:GetAttribute(utils.constants.SERVER_LOADED_ATTRIBUTE) == nil then
@@ -41,8 +41,8 @@ function client:start(startOptions: StartOptions): Promise.Promise
 			until script.Parent:GetAttribute(utils.constants.SERVER_LOADED_ATTRIBUTE) ~= nil
 		end
 
-		local controllers = utils.getContents(startOptions.controllersContainer)
-		local components = utils.getContents(startOptions.componentsContainer)
+		local controllers = utils.getContents(startOptions.controllers)
+		local components = utils.getContents(startOptions.components)
 
 		utils.debugger.warn("Initializing controllers")
 		utils.callFrom(if self.casing == "Pascal" then "Init" else "init", controllers, function(controllerName)

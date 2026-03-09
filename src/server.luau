@@ -15,7 +15,7 @@ local server = {}
 --[=[
 	Determinates what case style should be used when calling methods.
 ]=]
-server.casing = "camel" :: CaseStyle
+server.casing = "Pascal" :: CaseStyle
 --[=[
 	Determines if client startup should wait until server load finish.
 ]=]
@@ -32,8 +32,8 @@ function server:start(startOptions: StartOptions): Promise.Promise
 	return Promise.new(function(resolve)
 		local startTick = tick()
 
-		local services = utils.getContents(startOptions.servicesContainer)
-		local components = utils.getContents(startOptions.componentsContainer)
+		local services = utils.getContents(startOptions.services)
+		local components = utils.getContents(startOptions.components)
 
 		utils.debugger.warn("Initializing services")
 		utils.callFrom(if self.caseStyle == "Pascal" then "Init" else "init", services, function(serviceName)
