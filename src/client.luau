@@ -7,8 +7,9 @@ local utils = require(script.Parent.utils)
 export type CaseStyle = "camel" | "Pascal"
 
 export type StartOptions = {
-	controllers: Folder,
 	components: Folder,
+	controllers: Folder,
+	handlers: Folder,
 }
 
 local client = {}
@@ -23,6 +24,20 @@ client.waitForServer = true
 --[=[
 	Yields until server load completes if `waitForServer` is true.
 	Initializes controllers, then starts controllers, and then start components.
+
+	```luau
+	Framework:start({
+		components = path.to.components,
+		controllers = path.to.controllers,
+		handlers = path.to.handlers,
+	})
+		:andThen(function(delta)
+			print(`Client load completed. Took: {delta}s`)
+		end)
+		:catch(function(err)
+			warn(`Something went wrong while starting framework from client: {err}`)
+		end)
+	```
 
 	@yields
 	@param startOptions StartOptions
@@ -43,6 +58,7 @@ function client:start(startOptions: StartOptions): Promise.Promise
 
 		local controllers = utils.getContents(startOptions.controllers)
 		local components = utils.getContents(startOptions.components)
+		local handlers = utils.getContents(startOptions.handlers)
 
 		utils.debugger.warn("Initializing controllers")
 		utils.callFrom(if self.casing == "Pascal" then "Init" else "init", controllers, function(controllerName)
@@ -54,8 +70,13 @@ function client:start(startOptions: StartOptions): Promise.Promise
 			utils.debugger.print(`{controllerName} started`)
 		end)
 
-		utils.debugger.warn(`Starting components`)
+		utils.debugger.warn("Starting components")
 		utils.startComponents(components)
+
+		utils.debugger.warn("Calling handlers")
+		utils.call(handlers, function(name)
+			utils.debugger.print(`Handler {name} called`)
+		end)
 
 		resolve(tick() - startTick)
 	end)

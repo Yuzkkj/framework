@@ -8,6 +8,7 @@ export type CaseStyle = "camel" | "Pascal"
 
 export type StartOptions = {
 	components: Folder,
+	handlers: Folder,
 	services: Folder,
 }
 
@@ -34,6 +35,7 @@ function server:start(startOptions: StartOptions): Promise.Promise
 
 		local services = utils.getContents(startOptions.services)
 		local components = utils.getContents(startOptions.components)
+		local handlers = utils.getContents(startOptions.handlers)
 
 		utils.debugger.warn("Initializing services")
 		utils.callFrom(if self.casing == "Pascal" then "Init" else "init", services, function(serviceName)
@@ -47,6 +49,11 @@ function server:start(startOptions: StartOptions): Promise.Promise
 
 		utils.debugger.warn("Starting components")
 		utils.startComponents(components)
+
+		utils.debugger.warn("Calling handlers")
+		utils.call(handlers, function(name)
+			utils.debugger.print(`Handler {name} called`)
+		end)
 
 		if self.waitForServer then
 			script.Parent:SetAttribute(utils.constants.SERVER_LOADED_ATTRIBUTE, true)
