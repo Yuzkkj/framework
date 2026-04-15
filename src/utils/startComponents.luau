@@ -11,12 +11,7 @@ return function(components: { [string]: any }): ()
 			continue
 		end
 
-		if not content.Tag then
-			debugger.warn(`Missing tag for {componentName} component`)
-			continue
-		end
-
-		for _, instance in pairs(CollectionService:GetTagged(content.Tag)) do
+		for _, instance in pairs(CollectionService:GetTagged(componentName)) do
 			Promise.promisify(content.new)(instance)
 				:andThen(function(object)
 					objectsCache[instance] = object
@@ -28,7 +23,7 @@ return function(components: { [string]: any }): ()
 				end)
 		end
 
-		CollectionService:GetInstanceAddedSignal(content.Tag):Connect(function(instance)
+		CollectionService:GetInstanceAddedSignal(componentName):Connect(function(instance)
 			Promise.promisify(content.new)(instance)
 				:andThen(function(object)
 					objectsCache[instance] = object
@@ -40,7 +35,7 @@ return function(components: { [string]: any }): ()
 				end)
 		end)
 
-		CollectionService:GetInstanceRemovedSignal(content.Tag):Connect(function(instance)
+		CollectionService:GetInstanceRemovedSignal(componentName):Connect(function(instance)
 			local object = objectsCache[instance]
 			if object then
 				object:Destroy()
