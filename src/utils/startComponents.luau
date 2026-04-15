@@ -5,7 +5,7 @@ local Promise = require(script.Parent.Parent.Parent:WaitForChild("Promise"))
 local debugger = require(script.Parent.debugger)
 local objectsCache = {} :: { [Instance]: any & { Destroy: () -> () } }
 
-return function(components: { [string]: any }): ()
+return function(components: { [string]: any }, casing: "camel" | "Pascal"): ()
 	for componentName, content in pairs(components) do
 		if type(content.new) ~= "function" then
 			continue
@@ -38,7 +38,11 @@ return function(components: { [string]: any }): ()
 		CollectionService:GetInstanceRemovedSignal(componentName):Connect(function(instance)
 			local object = objectsCache[instance]
 			if object then
-				object:Destroy()
+				if casing == "camel" then
+					object:destroy()
+				else
+					object:Destroy()
+				end
 			end
 		end)
 

@@ -24,6 +24,20 @@ server.waitForServer = true
 --[=[
 	Initializes services, then starts services, and then start components.
 
+	```luau
+	Framework:start({
+		components = path.to.components,
+		handlers = path.to.handlers,
+		services = path.to.services,
+	})
+		:andThen(function(delta)
+			print(`Server load completed. Took: {delta}s`)
+		end)
+		:catch(function(err)
+			warn(`Something went wrong while starting framework from server: {err}`)
+		end)
+	````
+
 	@param startOptions StartOptions
 	@return A promise that resolves with the time taken to start
 ]=]
@@ -48,7 +62,7 @@ function server:start(startOptions: StartOptions): Promise.Promise
 		end)
 
 		utils.debugger.warn("Starting components")
-		utils.startComponents(components)
+		utils.startComponents(components, self.casing)
 
 		utils.debugger.warn("Calling handlers")
 		utils.call(handlers, function(name)
