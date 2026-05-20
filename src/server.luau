@@ -16,7 +16,7 @@ local server = {}
 --[=[
 	Determinates what case style should be used when calling methods.
 ]=]
-server.casing = "Pascal" :: CaseStyle
+server.casing = "camel" :: CaseStyle
 --[=[
 	Determines if client startup should wait until server load finish.
 ]=]
