@@ -1,7 +1,7 @@
-local client = require(script.client)
-local server = require(script.server)
+local FrameworkClient = require(script.FrameworkClient)
+local FrameworkServer = require(script.FrameworkServer)
 
 return {
-	client = client,
-	server = server,
+	client = FrameworkClient,
+	server = FrameworkServer,
 }
