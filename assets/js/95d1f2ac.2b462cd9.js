@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkdocs=self.webpackChunkdocs||[]).push([[676],{4410:e=>{e.exports=JSON.parse('{"sourceUrl":"https://github.com/Yuzkkj/framework/blob/main","baseUrl":"/framework/","classOrder":["FrameworkServer","FrameworkClient"],"apiCategories":[]}')}}]);
