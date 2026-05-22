@@ -5,19 +5,13 @@ local Promise = require(script.Parent.Parent:WaitForChild("Promise"))
 local FrameworkUtils = require(script.Parent.FrameworkUtils)
 
 --[=[
-	@type CaseStyle "camel" | "Pascal"
-	@within FrameworkServer
-
-	Determinates what case style should be used when calling methods.
-]=]
-export type CaseStyle = "camel" | "Pascal"
-
---[=[
 	@interface StartOptions
 	@within FrameworkServer
 	.components Folder -- Folder containing components.
 	.handlers Folder -- Folder containing handlers.
 	.services Folder -- Folder containing services.
+
+	Provides options to start FrameworkServer.
 
 	```lua
 	local ServerScriptService = game:GetService("ServerScriptService")
@@ -28,8 +22,6 @@ export type CaseStyle = "camel" | "Pascal"
 		services = ServerScriptService.services,
 	}
 	```
-
-	Provides options to start FrameworkServer.
 ]=]
 export type StartOptions = {
 	components: Folder,
@@ -45,16 +37,20 @@ export type StartOptions = {
 local FrameworkServer = {}
 
 --[=[
-	@prop casing CaseStyle
+	@prop casing "camel" | "Pascal"
 	@within FrameworkServer
+
+	Determinates what case style should be used when calling methods.
 ]=]
-FrameworkServer.casing = "camel" :: CaseStyle
+FrameworkServer.casing = "camel" :: "camel" | "Pascal"
 
 --[=[
 	@method start
 	@within FrameworkServer
 	@param options StartOptions
 	@return Promise -- A promise that resolves with the time it took to start the framework.
+
+	Initializes services, then starts services, then start components and finally call the handlers.
 
 	```lua
 	Framework:start({
@@ -73,8 +69,6 @@ FrameworkServer.casing = "camel" :: CaseStyle
 	:::note
 	The tag used for components will be the same as it's name, and `destroy` will be automatically called either when the tag is removed or the instance is destroyed.
 	:::
-
-	Initializes services, then starts services, then start components and finally call the handlers.
 ]=]
 function FrameworkServer:start(startOptions: StartOptions): Promise.Promise
 	assert(RunService:IsServer(), "Framework server can only be called from server")
@@ -104,9 +98,7 @@ function FrameworkServer:start(startOptions: StartOptions): Promise.Promise
 			FrameworkUtils.debugger.print(`Handler {name} called`)
 		end)
 
-		if self.waitForServer then
-			script.Parent:SetAttribute(FrameworkUtils.constants.SERVER_LOADED_ATTRIBUTE, true)
-		end
+		script.Parent:SetAttribute(FrameworkUtils.constants.SERVER_LOADED_ATTRIBUTE, true)
 
 		resolve(tick() - startTick)
 	end)

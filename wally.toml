@@ -1,12 +1,12 @@
 [package]
 name = "yuzkkj/framework"
-version = "4.0.0"
+version = "4.0.1"
 registry = "https://github.com/UpliftGames/wally-index"
 realm = "shared"
-description = "Yuz framework. Don't use!"
+description = "Yuz's framework. Do not use!"
 homepage = "https://create.roblox.com/store/asset/92499209248259/Framework"
 repository = "https://github.com/Yuzkkj/framework"
-license = "Apache-2.0"
+license = "MIT"
 authors = ["Yuz"]
 exclude = ["**"]
 include = [

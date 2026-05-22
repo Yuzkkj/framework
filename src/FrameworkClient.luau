@@ -5,19 +5,13 @@ local Promise = require(script.Parent.Parent:WaitForChild("Promise"))
 local FrameworkUtils = require(script.Parent.FrameworkUtils)
 
 --[=[
-	@type CaseStyle "camel" | "Pascal"
-	@within FrameworkClient
-
-	Determinates what case style should be used when calling methods.
-]=]
-export type CaseStyle = "camel" | "Pascal"
-
---[=[
 	@interface StartOptions
 	@within FrameworkClient
 	.components Folder -- Folder containing components.
 	.controllers Folder -- Folder containing controllers.
 	.handlers Folder -- Folder containing handlers.
+
+	Provides options to start FrameworkClient.
 
 	```lua
 	local ReplicatedStorage = game:GetService("ReplicatedStorage")
@@ -28,8 +22,6 @@ export type CaseStyle = "camel" | "Pascal"
 		handlers = ReplicatedStorage.handlers,
 	}
 	```
-
-	Provides options to start FrameworkClient.
 ]=]
 export type StartOptions = {
 	components: Folder,
@@ -45,10 +37,12 @@ export type StartOptions = {
 local FrameworkClient = {}
 
 --[=[
-	@prop casing CaseStyle
+	@prop casing "camel" | "Pascal"
 	@within FrameworkClient
+
+	Determinates what case style should be used when calling methods.
 ]=]
-FrameworkClient.casing = "camel" :: CaseStyle
+FrameworkClient.casing = "camel" :: "camel" | "Pascal"
 
 --[=[
 	@prop waitForServer boolean
@@ -64,6 +58,8 @@ FrameworkClient.waitForServer = true
 	@yields
 	@param startOptions StartOptions
 	@return Promise -- A promise that resolves with the time it took to start the framework.
+
+	Initializes controllers, then starts controllers, then start components and finally call the handlers.
 
 	```lua
 	Framework:start({
@@ -86,8 +82,6 @@ FrameworkClient.waitForServer = true
 	:::warning
 	This method yields until server load completes if `waitForServer` is set to true.
 	:::
-	
-	Initializes controllers, then starts controllers, then start components and finally call the handlers.
 ]=]
 function FrameworkClient:start(startOptions: StartOptions): Promise.Promise
 	assert(RunService:IsClient(), "Framework client can only be called from client")
