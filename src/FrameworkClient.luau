@@ -80,7 +80,7 @@ FrameworkClient.waitForServer = true
 	:::
 
 	:::warning
-	This method yields until server load completes if `waitForServer` is set to true.
+	`:start(...)` yields until server load completes if `waitForServer` is set to true.
 	:::
 ]=]
 function FrameworkClient:start(startOptions: StartOptions): Promise.Promise
@@ -122,7 +122,7 @@ function FrameworkClient:start(startOptions: StartOptions): Promise.Promise
 		)
 
 		FrameworkUtils.debugger.warn("Starting components")
-		FrameworkUtils.startComponents(components)
+		FrameworkUtils.startComponents(components, self.casing)
 
 		FrameworkUtils.debugger.warn("Calling handlers")
 		FrameworkUtils.call(handlers, function(name)
